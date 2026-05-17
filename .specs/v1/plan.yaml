@@ -1,0 +1,37 @@
+spec_id: v1
+spec_text_ref: c8dd44c0c032e5be2afea1e8804b7ff368b02934b66e5d1036d0e3183f1cb423
+spec_text_sha: 0503c942d4e8ade09f391e27c1e4829526eded24
+revision: 1
+project_status: planning
+created_at: '2026-05-17T14:18:26.163102Z'
+updated_at: '2026-05-17T14:18:26.163102Z'
+phases:
+- id: phase-1
+  name: Add function and tests
+  summary: 'When this phase closes, the repo root contains add.py exposing add(a: int, b: int) -> int
+    (returning a + b, raising TypeError on non-int input) and test_add.py with parametrized pytest cases
+    for positive, negative, zero, and type-error inputs. The closing checkpoint can verify by running
+    pytest and observing every parametrized case passes.'
+  status: planned
+  position: 1
+  created_at: '2026-05-17T14:18:26.163102Z'
+  items:
+  - id: v014smoke-item-001
+    title: Implement add function with parametrized tests
+    summary: 'Create add.py at the project root containing add(a: int, b: int) -> int that returns a +
+      b and raises TypeError when either argument is not an int. Create test_add.py at the project root
+      with parametrized pytest cases covering positive integers, negative integers, zero, and TypeError
+      on non-int inputs.'
+    scope_notes: 'Should include: add.py with the function and an isinstance-based type check that raises
+      TypeError; test_add.py using @pytest.mark.parametrize with cases for positive, negative, zero, and
+      type-error inputs (the type-error case using pytest.raises(TypeError)). Should NOT include: CLI
+      wrapper, additional arithmetic operations, __init__.py / package layout, pyproject.toml or any packaging
+      metadata, conftest.py beyond what pytest auto-discovers, or tests for behaviors not in the spec
+      (overflow, float coercion, etc.).'
+    prior_deliverable_refs: []
+    rationale: Sole deliverable of the project per the spec; no foundation work precedes it and there
+      is no later item to order against.
+    status: planned
+    supersedes: []
+    superseded_by: []
+    estimated_size: small
