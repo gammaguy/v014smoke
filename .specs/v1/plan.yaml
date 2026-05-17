@@ -4,8 +4,9 @@ spec_text_sha: 0503c942d4e8ade09f391e27c1e4829526eded24
 revision: 2
 project_status: in_progress
 current_phase_id: phase-1
+active_item_id: v014smoke-item-001
 created_at: '2026-05-17T14:18:26.163102Z'
-updated_at: '2026-05-17T14:23:47.027515Z'
+updated_at: '2026-05-17T14:34:21.627460Z'
 phases:
 - id: phase-1
   name: Add function and tests
@@ -31,7 +32,9 @@ phases:
       the 200-LOC heuristic, but splitting into implementation-then-tests would produce ceremony without
       checkpoint value and an intermediate state (function with no tests) that has no meaningful verification
       surface.
-    status: in_haggle
+    status: in_flight
+    github_issue: 1
     supersedes: []
     superseded_by: []
+    contract_path: .specs/v1/contracts/v014smoke-item-001.md
     estimated_size: small
