@@ -1,0 +1,155 @@
+# Project invariants — only-strengthen ratchet
+#
+# Each invariant has a threshold and a direction. Direction enforces
+# the ratchet: 'decrease_only' means the threshold can be tightened
+# (lowered) but never relaxed (raised); 'increase_only' is the inverse
+# (used for things like coverage where higher is better).
+#
+# CI runs every check on every PR. Failed invariants block merge.
+# Modifications to this file should be reviewed by a human, not made
+# by agents.
+#
+# To temporarily exempt a specific PR, add the field
+#   invariant_exception: <invariant_name> because <reason>
+# to the PR body. Exceptions go to the triage queue and are tracked.
+# If exception_rate exceeds exception_rate_target, the invariant is
+# reviewed for misconfiguration.
+
+invariants:
+  # =================================================================
+  # Tier 1 — adopt from day one
+  # =================================================================
+
+  file_size_max_lines:
+    threshold: 1300
+    direction: decrease_only
+    enabled: true
+    description: |
+      Max lines per source file. Files larger than this should be split.
+      Single most important invariant for AI-generated code; agents
+      bloat files because adding to existing files is cognitively
+      cheaper than splitting.
+
+      Calibrated to current codebase: orchestrator.py and pipeline_impl.py
+      are the largest files at ~1208/1263 lines. The threshold should
+      ratchet down as the codebase matures and modules get split.
+      Initial 500 was an aspirational target; 1300 reflects current
+      reality with intent to ratchet (CAL-013).
+    history:
+      - date: 2026-05-04
+        value: 500
+        reason: initial (aspirational; not enforceable against current code)
+      - date: 2026-05-06
+        value: 1300
+        reason: |
+          Calibrated to current state of large modules
+          (orchestrator.py 1208, pipeline_impl.py 1263).
+          Ratchet down as modules get refactored.
+
+  function_size_max_lines:
+    threshold: 50
+    direction: decrease_only
+    enabled: true
+    description: |
+      Max lines per function. Catches inline edge-case handling that
+      should be factored or deleted.
+    history:
+      - date: 2026-05-04
+        value: 50
+        reason: initial
+
+  cyclomatic_complexity_max:
+    threshold: 10
+    direction: decrease_only
+    enabled: true
+    description: |
+      Max cyclomatic complexity per function. Catches over-defensive
+      code paths.
+    history:
+      - date: 2026-05-04
+        value: 10
+        reason: initial
+
+  cyclic_imports:
+    threshold: 0
+    direction: decrease_only
+    enabled: true
+    description: |
+      Number of import cycles allowed in the module graph. Already at
+      zero; the direction prevents future loosening.
+    history:
+      - date: 2026-05-04
+        value: 0
+        reason: initial
+
+  todo_without_issue_link:
+    threshold: 0
+    direction: decrease_only
+    enabled: true
+    description: |
+      Number of TODO/FIXME/XXX/HACK comments without an associated
+      issue link. Forces deferred work into the tracker.
+    history:
+      - date: 2026-05-04
+        value: 0
+        reason: initial
+
+  diff_coverage_min_pct:
+    threshold: 80
+    direction: increase_only
+    enabled: true
+    description: |
+      Minimum test coverage of changed lines per PR. Catches test gaps
+      without requiring full-codebase coverage targets.
+    history:
+      - date: 2026-05-04
+        value: 80
+        reason: initial
+
+  dead_code_in_new_files:
+    threshold: 0
+    direction: decrease_only
+    enabled: true
+    description: |
+      Number of unused imports / unreferenced symbols in newly-added
+      files. Standard linter coverage. Disabled checks for older files
+      where dead code accumulated before this rule was active.
+    history:
+      - date: 2026-05-04
+        value: 0
+        reason: initial
+
+  # =================================================================
+  # Tier 2 — adopt after Tier 1 stabilizes
+  # =================================================================
+
+  max_function_arguments:
+    threshold: 5
+    direction: decrease_only
+    enabled: true
+    description: |
+      Max positional + keyword arguments per function. Catches god
+      functions and missing struct extraction.
+    history:
+      - date: 2026-05-04
+        value: 5
+        reason: initial
+
+  no_secrets_in_code:
+    threshold: 0
+    direction: decrease_only
+    enabled: true
+    description: |
+      Implemented via gitleaks subprocess. Scans for API keys, tokens,
+      secrets in every commit.
+    history:
+      - date: 2026-05-04
+        value: 0
+        reason: initial
+
+  duplicate_function_bodies:
+    threshold: 0
+    direction: decrease_only
+    enabled: false   # enable after Tier 1 stabilizes; needs tuning
+    description: |
+      
